@@ -1,0 +1,274 @@
+.app-shell {
+  width: min(100%, 720px);
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.clock-panel,
+.editor-panel,
+.stats-panel,
+.history-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 14px 35px rgba(34, 40, 49, 0.06);
+}
+
+.clock-panel {
+  min-height: calc(100svh - 32px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+  padding: 22px;
+}
+
+.topline,
+.status-row,
+.progress-meta,
+.history-panel li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.topline {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.topline span {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.caption {
+  color: var(--muted);
+  font-size: 1rem;
+  margin: 0;
+}
+
+h1 {
+  color: var(--ink);
+  font-size: clamp(4.6rem, 24vw, 8.5rem);
+  font-weight: 750;
+  line-height: 0.92;
+  margin: 0;
+}
+
+h2 {
+  color: var(--ink);
+  font-size: 1.08rem;
+  font-weight: 720;
+  line-height: 1.2;
+  margin: 0 0 6px;
+}
+
+.status-row span {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 9px 12px;
+  color: var(--ink);
+  background: var(--soft);
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.progress-block {
+  display: grid;
+  gap: 10px;
+}
+
+.progress-meta {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.progress-track {
+  height: 16px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dce6e3;
+}
+
+.progress-fill {
+  height: 100%;
+  min-width: 3px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #2c6e63, #d8a24c);
+  transition: width 0.4s ease;
+}
+
+.anchor-note,
+.stats-footnote,
+.history-empty,
+.editor-panel p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.empty-state {
+  display: grid;
+  gap: 12px;
+}
+
+.empty-state p:last-child {
+  color: var(--muted);
+  margin: 0;
+}
+
+.primary-action,
+.editor-panel button {
+  min-height: 52px;
+  border: 0;
+  border-radius: 8px;
+  color: #ffffff;
+  background: var(--action);
+  font: inherit;
+  font-weight: 720;
+  cursor: pointer;
+}
+
+.primary-action:active,
+.editor-panel button:active {
+  transform: translateY(1px);
+}
+
+.primary-action:focus-visible,
+.editor-panel button:focus-visible,
+input:focus-visible {
+  outline: 3px solid rgba(44, 110, 99, 0.24);
+  outline-offset: 2px;
+}
+
+.editor-panel,
+.stats-panel,
+.history-panel {
+  display: grid;
+  gap: 18px;
+  margin-top: 14px;
+  padding: 18px;
+}
+
+.editor-panel form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.editor-panel label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 650;
+}
+
+input {
+  width: 100%;
+  min-height: 48px;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 12px;
+  color: var(--ink);
+  background: var(--surface);
+  font: inherit;
+}
+
+.editor-panel button {
+  grid-column: 1 / -1;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.stats-grid div {
+  min-height: 76px;
+  display: grid;
+  align-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid var(--line);
+  padding: 12px;
+  background: transparent;
+}
+
+.stats-grid div:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.stats-grid span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.stats-grid strong {
+  color: var(--ink);
+  font-size: 1.02rem;
+  line-height: 1.25;
+}
+
+.history-panel ol {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.history-panel li {
+  border-bottom: 1px solid var(--line);
+  padding: 10px 0;
+}
+
+.history-panel li:last-child {
+  border-bottom: 0;
+}
+
+.history-panel span {
+  color: var(--muted);
+}
+
+.history-panel strong {
+  color: var(--ink);
+  font-size: 1.05rem;
+}
+
+@media (min-width: 720px) {
+  .app-shell {
+    padding: 32px;
+  }
+
+  .clock-panel {
+    min-height: 680px;
+    padding: 32px;
+  }
+}
+
+@media (max-width: 420px) {
+  .app-shell {
+    padding: 10px;
+  }
+
+  .clock-panel {
+    min-height: calc(100svh - 20px);
+    padding: 18px;
+  }
+
+  .status-row,
+  .editor-panel form,
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .status-row {
+    display: grid;
+  }
+}
