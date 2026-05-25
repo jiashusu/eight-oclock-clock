@@ -12,6 +12,7 @@ type WakeRecord = {
 
 type PersonalTime = {
   displayTime: string
+  seconds: string
   phase: string
   progressPercent: number
   elapsedLabel: string
@@ -28,6 +29,7 @@ type Stats = {
 }
 
 const STORAGE_KEY = 'eight-clock-wake-records'
+const DEVICE_KEY = 'eight-clock-device-id'
 const DAY_MS = 24 * 60 * 60 * 1000
 const PERSONAL_START_MINUTES = 8 * 60
 
@@ -72,12 +74,14 @@ function getPhase(totalPersonalMinutes: number) {
 function getPersonalTime(now: Date, anchorWokeAt: Date): PersonalTime {
   const elapsedMs = Math.max(0, now.getTime() - anchorWokeAt.getTime()) % DAY_MS
   const elapsedMinutes = elapsedMs / 60000
-  const personalMinutes = PERSONAL_START_MINUTES + elapsedMinutes
+  const totalPersonalSeconds = PERSONAL_START_MINUTES * 60 + Math.floor(elapsedMs / 1000)
+  const personalMinutes = Math.floor(totalPersonalSeconds / 60)
   const elapsedHours = Math.floor(elapsedMinutes / 60)
   const elapsedRemainder = Math.floor(elapsedMinutes % 60)
 
   return {
     displayTime: formatClock(personalMinutes),
+    seconds: pad(totalPersonalSeconds % 60),
     phase: getPhase(personalMinutes),
     progressPercent: Math.min(100, Math.max(0, (elapsedMs / DAY_MS) * 100)),
     elapsedLabel: `${elapsedHours}小时${elapsedRemainder}分钟`,
@@ -92,6 +96,19 @@ function sortRecords(records: WakeRecord[]) {
 
 function trimRecords(records: WakeRecord[]) {
   return sortRecords(records).slice(0, 30)
+}
+
+function mergeRecords(records: WakeRecord[]) {
+  const byDate = new Map<string, WakeRecord>()
+
+  for (const record of sortRecords(records).reverse()) {
+    const existing = byDate.get(record.date)
+    if (!existing || new Date(record.updatedAtISO).getTime() >= new Date(existing.updatedAtISO).getTime()) {
+      byDate.set(record.date, record)
+    }
+  }
+
+  return trimRecords(Array.from(byDate.values()))
 }
 
 function getLatestAnchor(records: WakeRecord[], now: Date) {
@@ -183,11 +200,22 @@ function loadRecords() {
   }
 }
 
+function getDeviceId() {
+  const existing = localStorage.getItem(DEVICE_KEY)
+  if (existing) return existing
+
+  const id = crypto.randomUUID().replaceAll('-', '')
+  localStorage.setItem(DEVICE_KEY, id)
+  return id
+}
+
 function App() {
   const [now, setNow] = useState(() => new Date())
   const [records, setRecords] = useState<WakeRecord[]>(loadRecords)
   const [formDate, setFormDate] = useState(() => toLocalDateKey(new Date()))
   const [formTime, setFormTime] = useState(() => toTimeValue(new Date()))
+  const [deviceId] = useState(getDeviceId)
+  const [syncStatus, setSyncStatus] = useState('正在连接 Vercel 云端...')
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 1000)
@@ -197,6 +225,54 @@ function App() {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(records))
   }, [records])
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function pullCloudRecords() {
+      try {
+        const response = await fetch(`/api/sync?deviceId=${encodeURIComponent(deviceId)}`)
+        if (!response.ok) throw new Error('Cloud pull failed')
+        const payload = (await response.json()) as { records?: WakeRecord[]; updatedAtISO?: string | null }
+
+        if (cancelled) return
+
+        if (payload.records?.length) {
+          setRecords((current) => mergeRecords([...payload.records!, ...current]))
+        }
+
+        setSyncStatus(payload.updatedAtISO ? `已从云端同步 ${payload.records?.length ?? 0} 条记录` : '云端已连接')
+      } catch {
+        if (!cancelled) setSyncStatus('云端暂不可用，已保存在本机')
+      }
+    }
+
+    pullCloudRecords()
+
+    return () => {
+      cancelled = true
+    }
+  }, [deviceId])
+
+  useEffect(() => {
+    if (records.length === 0) return
+
+    const timer = window.setTimeout(async () => {
+      try {
+        const response = await fetch('/api/sync', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ deviceId, records }),
+        })
+        if (!response.ok) throw new Error('Cloud push failed')
+        setSyncStatus('已同步到 Vercel 云端')
+      } catch {
+        setSyncStatus('云端暂不可用，已保存在本机')
+      }
+    }, 500)
+
+    return () => window.clearTimeout(timer)
+  }, [deviceId, records])
 
   const anchor = useMemo(() => getLatestAnchor(records, now), [records, now])
   const personalTime = useMemo(
@@ -217,7 +293,7 @@ function App() {
       updatedAtISO: timestamp,
     }
 
-    setRecords((current) => trimRecords([nextRecord, ...current.filter((record) => record.date !== date)]))
+    setRecords((current) => mergeRecords([nextRecord, ...current.filter((record) => record.date !== date)]))
   }
 
   function handleWakeNow() {
@@ -250,7 +326,10 @@ function App() {
         {personalTime ? (
           <>
             <p className="caption">现在是你的</p>
-            <h1>{personalTime.displayTime}</h1>
+            <h1 className="clock-time">
+              {personalTime.displayTime}
+              <span>{personalTime.seconds}</span>
+            </h1>
             <div className="status-row">
               <span>{personalTime.phase}</span>
               <span>醒来后 {personalTime.elapsedLabel}</span>
@@ -278,6 +357,7 @@ function App() {
         <button className="primary-action" type="button" onClick={handleWakeNow}>
           我醒了
         </button>
+        <p className="sync-note">{syncStatus}</p>
       </section>
 
       <section className="editor-panel" aria-label="补记或修改起床时间">
