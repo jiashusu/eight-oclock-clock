@@ -281,7 +281,7 @@ function App() {
       </section>
 
       <section className="editor-panel" aria-label="补记或修改起床时间">
-        <div>
+        <div className="section-heading">
           <h2>补记 / 修改</h2>
           <p>同一天再次保存会覆盖这一天的起床时间。</p>
         </div>
@@ -311,7 +311,9 @@ function App() {
       </section>
 
       <section className="stats-panel" aria-label="作息统计">
-        <h2>最近统计</h2>
+        <div className="section-heading">
+          <h2>最近统计</h2>
+        </div>
         <div className="stats-grid">
           <div>
             <span>7天平均</span>
@@ -338,7 +340,9 @@ function App() {
       </section>
 
       <section className="history-panel" aria-label="起床记录">
-        <h2>最近记录</h2>
+        <div className="section-heading">
+          <h2>最近记录</h2>
+        </div>
         {records.length > 0 ? (
           <ol>
             {sortRecords(records).map((record) => (

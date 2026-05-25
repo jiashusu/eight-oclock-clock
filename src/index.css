@@ -1,14 +1,17 @@
 :root {
-  --bg: #f3f6f5;
-  --surface: #ffffff;
-  --soft: #edf3f1;
-  --ink: #222831;
-  --muted: #66736f;
-  --line: #d6dfdc;
-  --action: #2c6e63;
+  --bg: #f5f5f7;
+  --surface: rgba(255, 255, 255, 0.92);
+  --surface-solid: #ffffff;
+  --surface-secondary: #f2f2f7;
+  --ink: #1d1d1f;
+  --muted: #6e6e73;
+  --tertiary: #8e8e93;
+  --line: rgba(60, 60, 67, 0.16);
+  --action: #007aff;
+  --action-pressed: #0069d9;
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    sans-serif;
+    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+    'Helvetica Neue', Arial, sans-serif;
   color: var(--ink);
   background: var(--bg);
   font-synthesis: none;
@@ -31,7 +34,7 @@ body {
   min-height: 100svh;
   margin: 0;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(243, 246, 245, 0)),
+    radial-gradient(circle at 50% -20%, rgba(255, 255, 255, 0.95), rgba(245, 245, 247, 0) 38rem),
     var(--bg);
 }
 
@@ -42,4 +45,25 @@ input {
 
 #root {
   min-height: 100svh;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --surface: rgba(28, 28, 30, 0.92);
+    --surface-solid: #1c1c1e;
+    --surface-secondary: #2c2c2e;
+    --ink: #f5f5f7;
+    --muted: #a1a1a6;
+    --tertiary: #8e8e93;
+    --line: rgba(235, 235, 245, 0.18);
+    --action: #0a84ff;
+    --action-pressed: #409cff;
+  }
+
+  body {
+    background:
+      radial-gradient(circle at 50% -20%, rgba(42, 42, 45, 0.75), rgba(0, 0, 0, 0) 34rem),
+      var(--bg);
+  }
 }

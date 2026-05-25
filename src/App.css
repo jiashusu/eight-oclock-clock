@@ -1,25 +1,27 @@
 .app-shell {
   width: min(100%, 720px);
   margin: 0 auto;
-  padding: 16px;
+  padding: 12px;
 }
 
 .clock-panel,
 .editor-panel,
 .stats-panel,
 .history-panel {
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  border: 0.5px solid var(--line);
+  border-radius: 22px;
   background: var(--surface);
-  box-shadow: 0 14px 35px rgba(34, 40, 49, 0.06);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
 }
 
 .clock-panel {
-  min-height: calc(100svh - 32px);
+  min-height: calc(100svh - 24px);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 24px;
+  gap: 22px;
   padding: 22px;
 }
 
@@ -35,7 +37,9 @@
 
 .topline {
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.94rem;
+  font-weight: 500;
+  letter-spacing: 0;
 }
 
 .topline span {
@@ -45,34 +49,44 @@
 
 .caption {
   color: var(--muted);
-  font-size: 1rem;
+  font-size: 1.08rem;
+  font-weight: 500;
+  letter-spacing: 0;
   margin: 0;
 }
 
 h1 {
   color: var(--ink);
-  font-size: clamp(4.6rem, 24vw, 8.5rem);
-  font-weight: 750;
-  line-height: 0.92;
+  font-size: clamp(5.25rem, 25vw, 9.25rem);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 0.88;
   margin: 0;
 }
 
 h2 {
   color: var(--ink);
   font-size: 1.08rem;
-  font-weight: 720;
-  line-height: 1.2;
-  margin: 0 0 6px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.section-heading {
+  display: grid;
+  gap: 4px;
+  padding: 0 4px;
 }
 
 .status-row span {
   min-width: 0;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 9px 12px;
+  border-radius: 15px;
+  padding: 12px 14px;
   color: var(--ink);
-  background: var(--soft);
-  font-size: 0.95rem;
+  background: var(--surface-secondary);
+  font-size: 0.96rem;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -82,22 +96,23 @@ h2 {
 }
 
 .progress-meta {
-  color: var(--muted);
+  color: var(--tertiary);
   font-size: 0.82rem;
+  font-weight: 600;
 }
 
 .progress-track {
-  height: 16px;
+  height: 10px;
   overflow: hidden;
   border-radius: 999px;
-  background: #dce6e3;
+  background: var(--surface-secondary);
 }
 
 .progress-fill {
   height: 100%;
   min-width: 3px;
   border-radius: inherit;
-  background: linear-gradient(90deg, #2c6e63, #d8a24c);
+  background: var(--action);
   transition: width 0.4s ease;
 }
 
@@ -107,7 +122,8 @@ h2 {
 .editor-panel p {
   color: var(--muted);
   font-size: 0.92rem;
-  line-height: 1.55;
+  font-weight: 450;
+  line-height: 1.45;
   margin: 0;
 }
 
@@ -125,23 +141,28 @@ h2 {
 .editor-panel button {
   min-height: 52px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 15px;
   color: #ffffff;
   background: var(--action);
   font: inherit;
-  font-weight: 720;
+  font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
+  transition:
+    background 0.16s ease,
+    transform 0.16s ease;
 }
 
 .primary-action:active,
 .editor-panel button:active {
-  transform: translateY(1px);
+  background: var(--action-pressed);
+  transform: scale(0.985);
 }
 
 .primary-action:focus-visible,
 .editor-panel button:focus-visible,
 input:focus-visible {
-  outline: 3px solid rgba(44, 110, 99, 0.24);
+  outline: 4px solid rgba(0, 122, 255, 0.18);
   outline-offset: 2px;
 }
 
@@ -149,83 +170,105 @@ input:focus-visible {
 .stats-panel,
 .history-panel {
   display: grid;
-  gap: 18px;
-  margin-top: 14px;
+  gap: 14px;
+  margin-top: 12px;
   padding: 18px;
 }
 
 .editor-panel form {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 0;
+  overflow: hidden;
+  border: 0.5px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-solid);
 }
 
 .editor-panel label {
   display: grid;
-  gap: 7px;
-  color: var(--muted);
-  font-size: 0.86rem;
-  font-weight: 650;
+  grid-template-columns: 72px 1fr;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 0 14px;
+  color: var(--ink);
+  font-size: 0.96rem;
+  font-weight: 600;
+}
+
+.editor-panel label + label {
+  border-top: 0.5px solid var(--line);
 }
 
 input {
   width: 100%;
-  min-height: 48px;
+  min-height: 44px;
   box-sizing: border-box;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 0 12px;
-  color: var(--ink);
-  background: var(--surface);
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  color: var(--muted);
+  background: transparent;
   font: inherit;
+  font-size: 1rem;
+  text-align: right;
 }
 
 .editor-panel button {
-  grid-column: 1 / -1;
+  margin-top: 12px;
 }
 
 .stats-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  overflow: hidden;
+  border: 0.5px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-solid);
 }
 
 .stats-grid div {
-  min-height: 76px;
-  display: grid;
-  align-content: space-between;
-  gap: 10px;
-  border-bottom: 1px solid var(--line);
-  padding: 12px;
+  min-height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 14px;
   background: transparent;
 }
 
-.stats-grid div:nth-last-child(-n + 2) {
-  border-bottom: 0;
+.stats-grid div + div {
+  border-top: 0.5px solid var(--line);
 }
 
 .stats-grid span {
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.92rem;
+  font-weight: 500;
 }
 
 .stats-grid strong {
   color: var(--ink);
-  font-size: 1.02rem;
+  font-size: 1.04rem;
+  font-weight: 700;
   line-height: 1.25;
+  text-align: right;
 }
 
 .history-panel ol {
   display: grid;
-  gap: 8px;
+  overflow: hidden;
+  border: 0.5px solid var(--line);
+  border-radius: 16px;
   list-style: none;
   padding: 0;
   margin: 0;
+  background: var(--surface-solid);
 }
 
 .history-panel li {
-  border-bottom: 1px solid var(--line);
-  padding: 10px 0;
+  min-height: 54px;
+  border-bottom: 0.5px solid var(--line);
+  padding: 0 14px;
 }
 
 .history-panel li:last-child {
@@ -234,11 +277,13 @@ input {
 
 .history-panel span {
   color: var(--muted);
+  font-weight: 500;
 }
 
 .history-panel strong {
   color: var(--ink);
   font-size: 1.05rem;
+  font-weight: 700;
 }
 
 @media (min-width: 720px) {
@@ -248,7 +293,7 @@ input {
 
   .clock-panel {
     min-height: 680px;
-    padding: 32px;
+    padding: 34px;
   }
 }
 
@@ -259,13 +304,7 @@ input {
 
   .clock-panel {
     min-height: calc(100svh - 20px);
-    padding: 18px;
-  }
-
-  .status-row,
-  .editor-panel form,
-  .stats-grid {
-    grid-template-columns: 1fr;
+    padding: 19px;
   }
 
   .status-row {
